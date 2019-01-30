@@ -2,7 +2,6 @@ use calamine::Error;
 use calamine::{open_workbook, DataType, Range, Reader, Xlsx};
 use clap::{App, Arg};
 use std::collections::HashMap;
-// use std::env;
 use std::fs;
 
 fn get_keys(start: u32, range: &Range<DataType>) -> Vec<String> {
@@ -59,23 +58,14 @@ fn main() {
     let file = matches
         .value_of("INPUT")
         .expect("Please provide a xlsx file");
-    // let file = env::args().nth(1).expect("Please provide a xlsx file");
 
     let title_line = matches.value_of("start").unwrap_or("0").parse().unwrap();
-    // let title_line = env::args()
-    //     .nth(2)
-    //     .unwrap_or("0".to_string())
-    //     .parse()
-    //     .unwrap();
 
-    let a = file.to_string() + ".json";
-    let dest = matches.value_of("OUTPUT").unwrap_or(&a);
-
-    // let dest = env::args().nth(3).unwrap_or(file.to_string() + ".json");
+    let default_result_filename = file.to_string() + ".json";
+    let dest = matches.value_of("OUTPUT").unwrap_or(&default_result_filename);
 
     let range = get_range(&file).ok().expect("fail");
     let keys = get_keys(title_line, &range);
-    // println!("{:?}", &keys);
 
     let mut result: Vec<HashMap<String, String>> = Vec::new();
 
@@ -87,5 +77,5 @@ fn main() {
     }
     let s = serde_json::ser::to_string(&result).unwrap();
     fs::write(dest, s).expect("Unable to write file");
-    println!("生成成功！");
+    println!("Done");
 }
