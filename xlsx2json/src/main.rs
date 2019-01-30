@@ -1,7 +1,8 @@
 use calamine::Error;
 use calamine::{open_workbook, DataType, Range, Reader, Xlsx};
+use clap::{App, Arg};
 use std::collections::HashMap;
-use std::env;
+// use std::env;
 use std::fs;
 
 fn get_keys(start: u32, range: &Range<DataType>) -> Vec<String> {
@@ -30,15 +31,47 @@ fn parse_row(keys: &Vec<String>, range: &Range<DataType>) -> HashMap<String, Str
 }
 
 fn main() {
-    let file = env::args().nth(1).expect("Please provide a xlsx file");
+    let matches = App::new("xlsx2json")
+        .version("0.1")
+        .author("Angela-1 <mail>")
+        .about("xlsx2json can generate json file from xlsx file with title as keys.")
+        .arg(
+            Arg::with_name("INPUT")
+                .help("Sets the input file to use")
+                .required(true)
+                .index(1),
+        )
+        .arg(
+            Arg::with_name("OUTPUT")
+                .help("Sets the output file to use")
+                .index(2)
+        )
+        .arg(
+            Arg::with_name("start")
+                .short("s")
+                .long("start")
+                .value_name("NUMBER")
+                .help("Sets title line number"),
+        )
+        
+        .get_matches();
 
-    let title_line = env::args()
-        .nth(2)
-        .unwrap_or("0".to_string())
-        .parse()
-        .unwrap();
+    let file = matches
+        .value_of("INPUT")
+        .expect("Please provide a xlsx file");
+    // let file = env::args().nth(1).expect("Please provide a xlsx file");
 
-    let dest = env::args().nth(3).unwrap_or(file.clone() + ".json");
+    let title_line = matches.value_of("start").unwrap_or("0").parse().unwrap();
+    // let title_line = env::args()
+    //     .nth(2)
+    //     .unwrap_or("0".to_string())
+    //     .parse()
+    //     .unwrap();
+
+    let a = file.to_string() + ".json";
+    let dest = matches.value_of("OUTPUT").unwrap_or(&a);
+
+    // let dest = env::args().nth(3).unwrap_or(file.to_string() + ".json");
 
     let range = get_range(&file).ok().expect("fail");
     let keys = get_keys(title_line, &range);
