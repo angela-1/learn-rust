@@ -22,7 +22,7 @@ fn get_queue_number() -> Option<i32> {
 fn make_numbered_directory(x: i32, name: &str) -> Result<()> {
     DirBuilder::new()
         .recursive(true)
-        .create(x.to_string() + "_" + name)
+        .create(x.to_string() + "_" + name + "/0-draft")
 }
 
 fn save_current_queue_number(x: i32) -> Result<()> {
