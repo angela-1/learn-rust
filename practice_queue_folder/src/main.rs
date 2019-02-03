@@ -1,6 +1,5 @@
-use std::fs;
-use std::fs::DirBuilder;
-use std::io::Result;
+use std::fs::{self, DirBuilder};
+use std::io::{stdin, Result};
 
 const QUEUE: &str = "foo";
 
@@ -20,10 +19,10 @@ fn get_queue_number() -> Option<i32> {
     }
 }
 
-fn make_numbered_directory(x: i32) -> Result<()> {
+fn make_numbered_directory(x: i32, name: &str) -> Result<()> {
     DirBuilder::new()
         .recursive(true)
-        .create(x.to_string() + "_")
+        .create(x.to_string() + "_" + name)
 }
 
 fn save_current_queue_number(x: i32) -> Result<()> {
@@ -32,13 +31,17 @@ fn save_current_queue_number(x: i32) -> Result<()> {
 }
 
 fn main() {
-    let num: i32 = get_queue_number().unwrap_or(1);
+    println!("请输入名称：");
+    let mut buffer = String::new();
+    stdin().read_line(&mut buffer).unwrap();
+    let name = buffer.trim();
 
-    match make_numbered_directory(num) {
+    let num: i32 = get_queue_number().unwrap_or(1);
+    match make_numbered_directory(num, &name[..]) {
         Ok(_) => {
             save_current_queue_number(num).unwrap();
-            println!("Done");
+            println!("完成");
         }
-        Err(_) => println!("Not create directory."),
+        Err(e) => println!("未创建目录 {}", e),
     }
 }
