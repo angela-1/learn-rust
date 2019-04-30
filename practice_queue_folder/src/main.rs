@@ -41,3 +41,33 @@ fn main() {
         Err(e) => println!("未创建目录 {}", e),
     }
 }
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn it_plus_one() {
+        assert_eq!(plus_one(3), 4);
+    }
+
+    #[test]
+    fn it_get_queue_number_success() {
+        assert_eq!(get_queue_number("for_test") > 1, true);
+    }
+
+    #[test]
+    fn it_get_queue_number_fail_and_get_one() {
+        assert_eq!(get_queue_number("no_file") == 1, true);
+    }
+
+    #[test]
+    fn it_save_number(){
+        use std::fs;
+        let test_file = "for_test_save";
+        save_current_queue_number(test_file, 22).unwrap();
+        assert_eq!(get_queue_number(test_file) == 23, true);
+        fs::remove_file(test_file).unwrap();
+    }
+
+}
