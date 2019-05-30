@@ -73,22 +73,44 @@ fn copy_folder(from: &String, to: &String) -> FsExtraResult {
     let from_path = Path::new(from);
     let to_path = Path::new(to);
     let options = CopyOptions::new();
-    copy(&from_path, &to_path, &options).unwrap();
-    Ok(())
+
+    match copy(&from_path, &to_path, &options) {
+        Ok(_) => Ok(()),
+        Err(_) => {
+            println!("文件夹 {} 已存在", &to_path.to_str().unwrap());
+            Ok(())
+        }
+    }
+    // copy(&from_path, &to_path, &options).unwrap();
+
+    // Ok(())
 }
 
 fn find_and_copy(dirs: Vec<DirEntry>, keywords: &Vec<String>, target: &String, verbose: u8) {
     for dir in dirs {
         for keyword in keywords {
             let file_name = dir.file_name().into_string().unwrap();
-            if file_name.contains(keyword) {
-                if verbose > 0  {
+            if reg_search(&file_name, &keyword) {
+                if verbose > 0 {
                     println!("找到 {} ", keyword);
                 }
-                copy_folder(&dir.path().into_os_string().into_string().unwrap(), target).unwrap();
+                if let Err(e) =
+                    copy_folder(&dir.path().into_os_string().into_string().unwrap(), target)
+                {
+                    println!("{:?}", e);
+                    continue;
+                };
             }
         }
     }
+}
+
+fn reg_search(name: &String, keyword: &String) -> bool {
+    if !name.contains("_") {
+        return false;
+    }
+    let strings: Vec<&str> = name.split("_").collect(); // ["bananas", "apples", "pear"]
+    strings[1] == keyword
 }
 
 fn main() {
@@ -102,12 +124,10 @@ fn main() {
 
     let target = opt.target.into_os_string().into_string().unwrap();
 
-    if !Path::new(&target).exists() {
-        create_all(&target, true).unwrap();
-    } else {
+    if Path::new(&target).exists() {
         remove(&target).unwrap();
     }
-
+    create_all(&target, true).unwrap();
     find_and_copy(dirs.unwrap(), &keywords.unwrap(), &target, opt.verbose);
 
     println!("完成");
