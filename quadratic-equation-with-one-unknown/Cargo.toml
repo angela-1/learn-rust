@@ -1,5 +1,5 @@
 [package]
-name = "l1"
+name = "quadratic-equation-with-one-unknown"
 version = "0.1.0"
 authors = ["Angela-1 <ruoshui_engr@163.com>"]
 edition = "2018"
