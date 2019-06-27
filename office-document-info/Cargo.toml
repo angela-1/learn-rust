@@ -1,0 +1,9 @@
+[package]
+name = "office-document-info-rs"
+version = "0.1.0"
+authors = ["Angela-1 <ruoshui_engr@163.com>"]
+edition = "2018"
+
+[dependencies]
+dotext = "0.1.1"
+regex = "1.1.7"
