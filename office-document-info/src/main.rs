@@ -133,7 +133,7 @@ fn parse_content(vec: Vec<String>) {
             }
         }
 
-        if flag == 0b1111 {
+        if flag == HAS_CODE | HAS_TITLE | HAS_SEND_TO | HAS_SEND_DATE {
             break;
         }
     }
