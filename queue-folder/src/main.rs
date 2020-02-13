@@ -1,78 +1,40 @@
-use std::fs::{DirBuilder};
-use std::fs::File;
-use std::io::prelude::*;
 
+// 按顺序创建文件夹
+// 
+use std::fs;
+use std::io::{stdin, Result};
+
+fn get_number(file: &str) -> i32 {
+	match fs::read_to_string(file) {
+		Ok(v) => v.parse().unwrap_or(1) + 1,
+		Err(_) => 1
+	}
+}
+
+fn save_number(file: &str, x: i32) -> Result<()> {
+    fs::write(file, x.to_string())?;
+    Ok(())
+}
+
+fn create_folder(x: i32, name: &str) -> Result<()> {
+    fs::create_dir_all(x.to_string() + "_" + name + "/0-draft")?;
+    Ok(())
+}
 
 fn main() {
-    // create_folder();
-    // create_folder().unwrap();
-    match create_folder() {
-    	Ok(_)  => println!("成功"),
-        Err(_) => println!("失败")
-    };
-    // println!("Hello, world!");
+	const QUEUE_FILE: &str = "foo";
+    println!("请输入任务名称：");
+    let mut buffer = String::new();
+    stdin().read_line(&mut buffer).unwrap();
+    let name = buffer.trim();
 
-    // let path = "./baz";
+    let x: i32 = get_number(QUEUE_FILE);
 
-    // assert!(fs::metadata(path).unwrap().is_dir());
-    // let path = get_primary_key();
+    match create_folder(x, name) {
+    	Ok(_) => save_number(QUEUE_FILE, x).unwrap(),
+    	Err(e) => println!("Error occured {}", e)
+    }
 
-    // let fd_name = "./".to_owned() + &path.unwrap().trim(); //+ &path.unwrap();
-    // println!("{:?}", &path.unwrap().trim());
-}
-
-/// 根据获取的文件夹名称创建文件夹
-fn create_folder () -> Result<(), String> {
-	get_primary_key()
-	.map_err(|err| err.to_string())
-	.and_then(|key| {
-		println!("请输入任务名称：");
-		let mut buffer = String::new();
-		std::io::stdin().read_line(&mut buffer)
-		.map_err(|err| err.to_string())
-		.map(|_| {
-			let folder_path = get_folder_name(key, buffer.trim());
-			DirBuilder::new().recursive(true).create(&folder_path).unwrap();
-			let folder_draft_path = folder_path.clone() + "/0-draft";
-			DirBuilder::new().recursive(true).create(&folder_draft_path).unwrap();
-			key
-		})
-	})
-	.and_then(|key| {
-		write_current_key(key)
-	})
-}
-
-
-
-/// 组装文件夹名称
-fn get_folder_name(key: i32, folder_name: &str) -> String {
-    "./".to_string() + &key.to_string() + "_" + folder_name
-}
-
-/// 创建文件夹成功后，将最新序列号写入 `foo.txt` 文件
-fn write_current_key (key: i32) -> Result<(), String> {
-	File::create("./foo.txt")
-	.map_err(|err| err.to_string())
-	.and_then(|mut file| {
-		file.write_all(key.to_string().as_bytes())
-		.map_err(|err| err.to_string())
-	})
-}
-
-/// 读取 `foo.txt` 文件获取当前的序列号
-fn get_primary_key () -> Result<i32, String> {
-	File::open("./foo.txt")
-	.map_err(|err| err.to_string())
-	.and_then(|mut file| {
-		let mut contents = String::new();
-		file.read_to_string(&mut contents)
-		.map_err(|err| err.to_string())
-		.map(|_| contents)
-	})
-	.and_then(|contents| {
-		contents.trim().parse::<i32>()
-		.map_err(|err| err.to_string())
-	})
-	.map(|n| n + 1)
+    // save_number(QUEUE_FILE, x);
+    println!("Hello, world! {}", x);
 }
