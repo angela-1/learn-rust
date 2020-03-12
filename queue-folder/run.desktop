@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Encoding=UTF-8
+Name=Run Executable
+Comment=Run Executable
+#Exec="/bin/sh" -c %f
+Exec="gnome-terminal" -x %f
+Icon=application.png
+Terminal=false
