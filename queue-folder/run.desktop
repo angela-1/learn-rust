@@ -4,8 +4,10 @@ Encoding=UTF-8
 Name=Run Executable
 Comment=Run Executable
 #Exec="/bin/sh" -c %f
-# working-directory 修改为要放的地方
-# %f 修改为要运行的程序，如 queue-folder
-Exec=gnome-terminal --working-directory=~/tmp -x %f
+# 使用方法：
+#   1 修改 working-directory 为 queue-folder 程序文件所在的目录绝对路径
+#   2 修改 %f 为要运行的程序绝对路径，如 queue-folder
+#     如果不修改 %f 运行时要将程序拖放到此 desktop 文件上也可以
+Exec=gnome-terminal --working-directory=/home/ellan/tmp -x %f
 Icon=application.png
 Terminal=false
