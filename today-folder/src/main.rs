@@ -3,7 +3,7 @@ use std::fs;
 use std::io;
 
 fn main() {
-	let local = Local::now().format("%Y_%m_%d").to_string();
+    let local = Local::now().format("%Y_%m_%d").to_string();
     create_folder(&local).unwrap();
     println!("Hello, world! {}", local);
 }
