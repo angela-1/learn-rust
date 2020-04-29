@@ -1,14 +1,14 @@
-use chrono::prelude::*;
-use std::fs::DirBuilder;
-
+use chrono::prelude::Local;
+use std::fs;
+use std::io;
 
 fn main() {
-	
 	let local = Local::now().format("%Y_%m_%d").to_string();
+    create_folder(&local).unwrap();
     println!("Hello, world! {}", local);
-    create_folder(&local)
 }
 
-fn create_folder(folder_path: &str) {
-	DirBuilder::new().recursive(true).create(&folder_path).unwrap();
+fn create_folder(folder_path: &str) -> io::Result<()> {
+    fs::create_dir_all(folder_path)?;
+    Ok(())
 }
