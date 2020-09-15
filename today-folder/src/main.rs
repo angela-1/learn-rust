@@ -5,7 +5,7 @@ use std::io;
 fn main() {
     let local = Local::now().format("%Y_%m_%d").to_string();
     create_folder(&local).unwrap();
-    println!("Hello, world! {}", local);
+    println!("完成 {}", local);
 }
 
 fn create_folder(folder_path: &str) -> io::Result<()> {

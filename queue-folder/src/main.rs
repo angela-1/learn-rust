@@ -21,7 +21,7 @@ fn save_number(file: &str, x: i32) {
 
 // 创建任务文件夹模板
 fn create_folder(x: i32, name: &str) -> Result<()> {
-    fs::create_dir_all(x.to_string() + "_" + name + "/0-draft")?;
+    fs::create_dir_all(x.to_string() + "_" + name + "/0-草稿")?;
     fs::create_dir_all(x.to_string() + "_" + name + "/1-来文")?;
     Ok(())
 }
@@ -65,7 +65,7 @@ mod unit_tests {
     #[test]
     fn it_create_folder_success() {
         create_folder(32, "test_create").unwrap();
-        assert_eq!(Path::new("32_test_create/0-draft").exists(), true);
+        assert_eq!(Path::new("32_test_create/0-草稿").exists(), true);
         fs::remove_dir_all("32_test_create").unwrap();
     }
 
